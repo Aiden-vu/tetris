@@ -1,13 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Tetromino {
     public List<Point> blocks = new ArrayList<>();
     public int type;
     private int xOffset = 3;
     private int yOffset = 0;
-    private int rotationState = 0;
 
     private static final int[][][] SHAPES = {
             // O
@@ -26,16 +24,20 @@ public class Tetromino {
             {{2, 0}, {0, 1}, {1, 1}, {2, 1}}
     };
 
+    private static final int[][] WALL_KICKS = {
+        {0, 0},   // no offset
+        {-1, 0},  // left 1
+        {1, 0},   // right 1
+        {0, -1},  // up 1
+        {-2, 0},  // left 2
+        {2, 0}    // right 2
+    };
+
     public Tetromino(int type) {
         this.type = type;
         for (int[] coord : SHAPES[type]) {
             blocks.add(new Point(coord[0] + xOffset, coord[1] + yOffset));
         }
-    }
-
-    public static Tetromino randomTetromino() {
-        Random rand = new Random();
-        return new Tetromino(rand.nextInt(SHAPES.length));
     }
 
     public boolean canMove(int[][] grid, int dx, int dy) {
@@ -68,22 +70,30 @@ public class Tetromino {
     public void rotate(int[][] grid) {
         if (type == 0) return; // O block doesn't rotate
 
-        Point pivot = blocks.get(1); // Use center or 2nd block as pivot
-        List<Point> rotated = new ArrayList<>();
-        for (Point p : blocks) {
-            int relX = p.x - pivot.x;
-            int relY = p.y - pivot.y;
-            int newX = pivot.x - relY;
-            int newY = pivot.y + relX;
-            rotated.add(new Point(newX, newY));
-        }
+        Point pivot = blocks.get(1); // pivot block (usually second block)
 
-        for (Point p : rotated) {
-            if (p.x < 0 || p.x >= grid[0].length || p.y < 0 || p.y >= grid.length || grid[p.y][p.x] != 0) {
-                return; // Invalid rotation
+        for (int[] offset : WALL_KICKS) {
+            List<Point> rotated = new ArrayList<>();
+            for (Point p : blocks) {
+                int relX = p.x - pivot.x;
+                int relY = p.y - pivot.y;
+                int newX = pivot.x - relY + offset[0];
+                int newY = pivot.y + relX + offset[1];
+                rotated.add(new Point(newX, newY));
+            }
+
+            boolean canRotateHere = true;
+            for (Point p : rotated) {
+                if (p.x < 0 || p.x >= grid[0].length || p.y < 0 || p.y >= grid.length || grid[p.y][p.x] != 0) {
+                    canRotateHere = false;
+                    break;
+                }
+            }
+            if (canRotateHere) {
+                blocks = rotated;
+                return; // rotation + kick successful
             }
         }
-
-        blocks = rotated;
+        // rotation failed with all kicks, do nothing
     }
 }

@@ -40,7 +40,7 @@ public class Tetris extends Application {
     private Label scoreLabel;
     private int score = 0;
 
-    private boolean leftPressed, rightPressed, downPressed, rotatePressed, holdPressed;
+    private boolean leftPressed, rightPressed, downPressed, rotatePressed;
     private long lastMoveTime, lastDownTime, lastRotateTime;
     private static final long MOVE_DELAY_NS = 150_000_000;
     private static final long FAST_DROP_DELAY_NS = 60_000_000;
@@ -181,6 +181,7 @@ public class Tetris extends Application {
     private void rotate() {
         current.rotate(grid);
     }
+
 
     private void holdPiece() {
         if (!canHold) return;
