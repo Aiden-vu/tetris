@@ -140,6 +140,9 @@ public class Tetris extends Application {
         startBtn.setOnAction(e -> mainStage.setScene(tutorialScene));
         exitBtn.setOnAction(e -> System.exit(0));
         
+        startBtn.setStyle("-fx-text-fill: white; -fx-background-insets: 0px; -fx-background-color: #7df59d; ");
+        exitBtn.setStyle("-fx-text-fill: white; -fx-background-insets: 0px; -fx-background-color: #ff3e3b; ");
+        
         //vbox layout
         VBox menuLayout = new VBox(20, title, startBtn, exitBtn);
         menuLayout.setAlignment(Pos.CENTER);
@@ -150,13 +153,14 @@ public class Tetris extends Application {
 
     private void setupTutorialScene() { //menu for controls and instructions to game
     	//tutorial for controls
-        Label tutorial = new Label("CONTROLS:\n\n← → ↓ : Move\n↑ : Rotate\nZ : Hold Piece\n\nPress 'Start Game' to begin.");
+        Label tutorial = new Label("CONTROLS:\n\n← → : Move\n↓ : Accelerate down\n ↑ : Rotate\nZ : Hold Piece\n\nPress 'Start Game' to begin.");
         tutorial.setFont(new Font(20));
         tutorial.setTextFill(Color.WHITE);
         tutorial.setAlignment(Pos.CENTER);
 
         //button to start game below instructions
         Button beginBtn = new Button("Start Game");
+        beginBtn.setStyle("-fx-text-fill: white; -fx-background-insets: 0px; -fx-background-color: #7df59d; ");
         beginBtn.setOnAction(e -> {
             resetGame();
             mainStage.setScene(gameScene);
@@ -165,7 +169,7 @@ public class Tetris extends Application {
         //vbox layout
         VBox tutorialLayout = new VBox(30, tutorial, beginBtn);
         tutorialLayout.setAlignment(Pos.CENTER);
-        tutorialLayout.setBackground(new Background(new BackgroundFill(Color.DARKSLATEGRAY, null, null)));
+        tutorialLayout.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         tutorialScene = new Scene(tutorialLayout, 450, 620);
     }
