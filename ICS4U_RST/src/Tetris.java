@@ -38,11 +38,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -85,7 +90,7 @@ public class Tetris extends Application {
     //tetromino dropping variables
     private double dropInterval = 500; // milliseconds
     private final double minDropInterval = 100; // minimum speed limit
-    private final double dropAcceleration = 50; // how much to speed up each time (ms)
+    private double dropAcceleration = 50; // how much to speed up each time (ms)
     //INFO: I know it ramps up FAST but I just did this to show that it actually is speeding up
     
     //tetromino class and logic
@@ -135,16 +140,19 @@ public class Tetris extends Application {
         
         //buttons
         Button startBtn = new Button("Start");
+        Button setDifficultyBtn = new Button("Set Difficulty");
         Button exitBtn = new Button("Exit");
 
         startBtn.setOnAction(e -> mainStage.setScene(tutorialScene));
+        setDifficultyBtn.setOnAction(e -> showDifficultyDialog());
         exitBtn.setOnAction(e -> System.exit(0));
         
         startBtn.setStyle("-fx-text-fill: white; -fx-background-insets: 0px; -fx-background-color: #7df59d; ");
+        setDifficultyBtn.setStyle("-fx-text-fill: white; -fx-background-insets: 0px; -fx-background-color: #4f72db; ");
         exitBtn.setStyle("-fx-text-fill: white; -fx-background-insets: 0px; -fx-background-color: #ff3e3b; ");
         
         //vbox layout
-        VBox menuLayout = new VBox(20, title, startBtn, exitBtn);
+        VBox menuLayout = new VBox(20, title, startBtn, setDifficultyBtn, exitBtn);
         menuLayout.setAlignment(Pos.CENTER);
         menuLayout.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
@@ -172,6 +180,28 @@ public class Tetris extends Application {
         tutorialLayout.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         tutorialScene = new Scene(tutorialLayout, 450, 620);
+    }
+    
+    private void showDifficultyDialog() { //dialog screen for difficulty (I couldn't find spindler's dialog if she had one?)
+        TextInputDialog dialog = new TextInputDialog(String.valueOf((int) dropInterval));
+        //title and prompts
+        dialog.setTitle("Set Difficulty Scaling");
+        dialog.setHeaderText("Enter the ramp up speed amount (10-1000)");
+        dialog.setContentText("Drop Speed Scaling:");
+
+        dialog.showAndWait().ifPresent(input -> { //read the input
+            try {
+                int customSpeed = Integer.parseInt(input); //convert to int
+                if (customSpeed < 10 || customSpeed > 1000) { //check if it is less than 10 or greater than 1000
+                    showAlert("Please enter a value between 10 and 1000."); //notify the user
+                } else {
+                	dropAcceleration = customSpeed; //new drop interval
+                    showAlert("Drop interval set to " + customSpeed + " ms."); //notify user
+                }
+            } catch (NumberFormatException ex) { //invalid inputs
+                showAlert("Invalid input. Please enter a number.");
+            }
+        });
     }
 
     private void setupGameOverScene() { //game over screen when you lose
@@ -299,7 +329,14 @@ public class Tetris extends Application {
         gameLoop.setCycleCount(Timeline.INDEFINITE);
         gameLoop.play();
     }
-
+    
+    private void showAlert(String message) { //used for when using alerts
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Difficulty");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
     private void setupControls() {
     	//using KeyCode, setup all controls
