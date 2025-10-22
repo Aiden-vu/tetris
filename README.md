@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=19648536)
 # ICS4U RST: Final Software Project
 
@@ -10,3 +11,6 @@ You will need to repeat this process for EACH computer that you use for this cou
 Don't forget to ALWAYS start your coding sessions with a PULL and end with a PUSH - make sure everything gets pushed to the cloud!
 
 Happy coding!
+=======
+# tetris
+>>>>>>> branch 'main' of https://github.com/Aiden-vu/tetris.git
